@@ -1,0 +1,2 @@
+ver=1.0-rc
+mvn deploy:deploy-file -Durl=file:///home/otter/git/aeroplanes-chess-2/repo -Dfile=/home/otter/git/websocket-gameroom/target/websocket-gameroom-$ver.jar -DgroupId=com.dotterbear -DartifactId=websocket-gameroom -Dpackaging=jar -Dversion=$ver
