@@ -31,7 +31,7 @@ public class PlayerService extends AbstractWebSocketService {
 	@Autowired
 	PlayerUtils playerUtils;
 
-	@Value(value = "${game.config.numof.player}")
+	@Value(value = "${websocket.gameroom.config.numof.player}")
 	int numOfPlayer;
 
 	public String addPlayer(String sessionId, String name) {
