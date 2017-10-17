@@ -10,7 +10,7 @@ import com.dotterbear.websocket.gameroom.model.Game;
 import com.dotterbear.websocket.gameroom.utils.PlayerUtils;
 
 @Configuration
-public class AppConfig {
+public class GameRoomConfig {
 
 	@Bean(name = "playerGameMap")
 	public Map<String, String> getPlayerGameMap() {
