@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.dotterbear.websocket.gameroom.model.Game;
+import com.dotterbear.websocket.gameroom.model.AbstractGame;
 import com.dotterbear.websocket.gameroom.utils.PlayerUtils;
 
 @Configuration
@@ -18,13 +18,13 @@ public class GameRoomConfig {
 	}
 
 	@Bean(name = "playingGameMap")
-	public Map<String, Game> getPlayingGameMap() {
-		return new ConcurrentHashMap<String, Game>();
+	public Map<String, AbstractGame> getPlayingGameMap() {
+		return new ConcurrentHashMap<String, AbstractGame>();
 	}
 
 	@Bean(name = "waitingGameMap")
-	public Map<String, Game> getWaitingGameMap() {
-		return new ConcurrentHashMap<String, Game>();
+	public Map<String, AbstractGame> getWaitingGameMap() {
+		return new ConcurrentHashMap<String, AbstractGame>();
 	}
 
 	@Bean

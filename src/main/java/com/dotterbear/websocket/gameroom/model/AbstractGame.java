@@ -3,7 +3,7 @@ package com.dotterbear.websocket.gameroom.model;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Game {
+public abstract class AbstractGame {
 
 	String id;
 	Player[] players;

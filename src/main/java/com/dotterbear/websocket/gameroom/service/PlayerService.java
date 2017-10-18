@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.dotterbear.websocket.gameroom.model.Game;
+import com.dotterbear.websocket.gameroom.model.AbstractGame;
 import com.dotterbear.websocket.gameroom.model.Player;
 import com.dotterbear.websocket.gameroom.repository.GameRepository;
 import com.dotterbear.websocket.gameroom.repository.PlayerRepository;
@@ -23,10 +23,10 @@ public class PlayerService extends AbstractWebSocketService {
 	PlayerRepository playerRepository;
 
 	@Autowired
-	GameRepository<Game> gameRepository;
+	GameRepository<AbstractGame> gameRepository;
 
 	@Autowired
-	GameService<Game> gameService;
+	GameService<AbstractGame> gameService;
 
 	@Autowired
 	PlayerUtils playerUtils;
@@ -36,34 +36,34 @@ public class PlayerService extends AbstractWebSocketService {
 
 	public String addPlayer(String sessionId, String name) {
 		logger.info("addPlayer, sessionId: " + sessionId);
-		Map<String, Game> waitingGameMap = gameRepository.getWaitingGameMap();
-		Game game = null;
-		game = waitingGameMap.values().stream().filter(g -> g.getJoinCount().getAndIncrement() <= numOfPlayer).findFirst().orElse(null);
+		Map<String, AbstractGame> waitingGameMap = gameRepository.getWaitingGameMap();
+		AbstractGame abstractGame = null;
+		abstractGame = waitingGameMap.values().stream().filter(g -> g.getJoinCount().getAndIncrement() <= numOfPlayer).findFirst().orElse(null);
 		// create new game, if no available waiting game exists
-		if (game == null) {
-			game = gameService.newGame();
-			waitingGameMap.put(game.getId(), game);
+		if (abstractGame == null) {
+			abstractGame = gameService.newGame();
+			waitingGameMap.put(abstractGame.getId(), abstractGame);
 		}
-		return addPlayer(sessionId, name, game);
+		return addPlayer(sessionId, name, abstractGame);
 	}
 
 	public String addPlayer(String sessionId, String gameId, String name) {
 		logger.info("addPlayer, sessionId: " + sessionId + ", gameId: " + gameId + ", name: " + name);
-		Game game = gameRepository.getWaitingGame(gameId);
-		if (game != null && game.getJoinCount().incrementAndGet() <= numOfPlayer)
-			return addPlayer(sessionId, name, game);
+		AbstractGame abstractGame = gameRepository.getWaitingGame(gameId);
+		if (abstractGame != null && abstractGame.getJoinCount().incrementAndGet() <= numOfPlayer)
+			return addPlayer(sessionId, name, abstractGame);
 		else
 			sendTo("joined", sessionId, "error", true);
 		return null;
 	}
 
-	String addPlayer(String sessionId, String name, Game game) {
-		logger.info("addPlayer, sessionId: " + sessionId + ", game: " + game + ", name: " + name);
-		if (game == null)
+	String addPlayer(String sessionId, String name, AbstractGame abstractGame) {
+		logger.info("addPlayer, sessionId: " + sessionId + ", game: " + abstractGame + ", name: " + name);
+		if (abstractGame == null)
 			return null;
 		String gameId = null;
 		int i = 0;
-		Player[] players = game.getPlayers();
+		Player[] players = abstractGame.getPlayers();
 
 		for (; i < players.length; i++) {
 			if (players[i] == null) {
@@ -71,7 +71,7 @@ public class PlayerService extends AbstractWebSocketService {
 				break;
 			}
 		}
-		gameId = game.getId();
+		gameId = abstractGame.getId();
 		playerRepository.addPlayer(sessionId, gameId);
 		sendTo("joined", sessionId, new String[] { "error", "game-id", "index" }, new Object[] { false, gameId, i });
 		return gameId;
@@ -83,14 +83,14 @@ public class PlayerService extends AbstractWebSocketService {
 		if (!playerGameMap.containsKey(sessionId))
 			return;
 		String gameId = playerGameMap.get(sessionId);
-		Game game = gameRepository.getWaitingGame(gameId);
+		AbstractGame abstractGame = gameRepository.getWaitingGame(gameId);
 		boolean isWaiting = true;
-		if (game == null) {
-			game = gameRepository.getPlayingGame(gameId);
+		if (abstractGame == null) {
+			abstractGame = gameRepository.getPlayingGame(gameId);
 			isWaiting = false;
 		}
 		playerRepository.removePlayer(sessionId);
-		Player[] players = game.getPlayers();
+		Player[] players = abstractGame.getPlayers();
 		int i;
 		for (i = 0; i < players.length; i++) {
 			if (players[i] != null && players[i].getSessionId().equals(sessionId)) {
@@ -99,25 +99,25 @@ public class PlayerService extends AbstractWebSocketService {
 			}
 		}
 		if (isWaiting) {
-			if (game.getReadyCount().get() > game.getJoinCount().decrementAndGet())
-				game.getReadyCount().decrementAndGet();
+			if (abstractGame.getReadyCount().get() > abstractGame.getJoinCount().decrementAndGet())
+				abstractGame.getReadyCount().decrementAndGet();
 		} else {
-			if (game.getReadyCount().decrementAndGet() == 1) {
+			if (abstractGame.getReadyCount().decrementAndGet() == 1) {
 				gameService.playerWin(gameId, playerUtils.getLastPlayerIndex(players));
 				return;
 			}
-			gameService.playerLeaved(game, i);
+			gameService.playerLeaved(abstractGame, i);
 		}
-		send("player-list", game.getId(), "players", players);
+		send("player-list", abstractGame.getId(), "players", players);
 	}
 
 	public void ready(String sessionId, String gameId) {
 		logger.info("ready, sessionId: " + sessionId + " , gam");
-		Game game = gameRepository.getWaitingGame(gameId);
-		if (game == null)
+		AbstractGame abstractGame = gameRepository.getWaitingGame(gameId);
+		if (abstractGame == null)
 			return;
-		send("player-list", gameId, "players", game.getPlayers());
-		if (game.getReadyCount().incrementAndGet() == numOfPlayer)
+		send("player-list", gameId, "players", abstractGame.getPlayers());
+		if (abstractGame.getReadyCount().incrementAndGet() == numOfPlayer)
 			gameService.start(gameId);
 	}
 

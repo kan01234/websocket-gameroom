@@ -7,10 +7,10 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.dotterbear.websocket.gameroom.model.Game;
+import com.dotterbear.websocket.gameroom.model.AbstractGame;
 
 @Repository
-public class GameRepository<T extends Game> {
+public class GameRepository<T extends AbstractGame> {
 
 	// TODO move to redis ?
 	@Autowired
