@@ -1,5 +1,7 @@
-cd ..
+# cd ..
 
-ver=1.0-rc
+ver=1.1-rc;
+base=$(pwd);
 mvn clean package
-mvn deploy:deploy-file -Durl=file:///$HOME/git/aeroplanes-chess/repo -Dfile=$HOME/git/websocket-gameroom/target/websocket-gameroom-$ver.jar -DgroupId=com.dotterbear -DartifactId=websocket-gameroom -Dpackaging=jar -Dversion=$ver
+rm -rf ${base}/../aeroplanes-chess/repo/com/dotterbear/websocket-gameroom/
+mvn deploy:deploy-file -Durl=file://${base}/../aeroplanes-chess/repo -Dfile=${base}/target/websocket-gameroom-$ver.jar -DgroupId=com.dotterbear -DartifactId=websocket-gameroom -Dpackaging=jar -Dversion=${ver}
