@@ -9,10 +9,11 @@ import com.dotterbear.websocket.gameroom.model.AbstractGame;
 public interface GameService<T extends AbstractGame> {
 
 	/**
-	 * return the new object extends game. better use {@link AbstractGameBuilder}
-	 * build method to init the gameId and number of players.
+	 * return the new object extends abstractGame. better use
+	 * {@link AbstractGameBuilder} build method to init the gameId and number of
+	 * players.
 	 * 
-	 * @return object extends game
+	 * @return object extends abstractGame
 	 */
 	T newGame();
 
@@ -30,7 +31,7 @@ public interface GameService<T extends AbstractGame> {
 	 * handle a player leaved the game
 	 * 
 	 * @param t
-	 *            object extends the game
+	 *            object extends abstractGame
 	 * @param i
 	 *            index of the player who leaved the game
 	 */
