@@ -110,7 +110,7 @@ public class PlayerService extends AbstractWebSocketService {
 			}
 			abstractGame.removeReadyPlayer(sessionId);
 			if (!isWaiting) {
-				if (abstractGame.getReadyPlayerSize() == 1) {
+				if (abstractGame.getReadyPlayersSize() == 1) {
 					gameService.playerWin(gameId, playerUtils.getLastPlayerIndex(players));
 					return;
 				}
@@ -128,7 +128,7 @@ public class PlayerService extends AbstractWebSocketService {
 		send("player-list", gameId, "players", abstractGame.getPlayers());
 		synchronized (abstractGame) {
 			abstractGame.addReadyPlayer(sessionId);
-			if (abstractGame.getReadyPlayerSize() == numOfPlayer)
+			if (abstractGame.getReadyPlayersSize() == numOfPlayer)
 				gameService.start(gameId);
 		}
 	}

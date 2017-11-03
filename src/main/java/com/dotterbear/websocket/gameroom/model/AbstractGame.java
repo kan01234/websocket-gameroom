@@ -9,7 +9,7 @@ public abstract class AbstractGame {
 
 	String id;
 	protected Player[] players;
-	Set<String> readyPlayerSet = new HashSet<String>();
+	Set<String> readyPlayers = new HashSet<String>();
 	AtomicInteger joinCount = new AtomicInteger(0);
 
 	public String getId() {
@@ -36,29 +36,29 @@ public abstract class AbstractGame {
 		this.joinCount = joinCount;
 	}
 
-	public Set<String> getReadyPlayerSet() {
-		return readyPlayerSet;
-	}
-
 	public void addReadyPlayer(String sessionId) {
-		readyPlayerSet.add(sessionId);
+		readyPlayers.add(sessionId);
 	}
 
 	public void removeReadyPlayer(String sessionId) {
-		readyPlayerSet.remove(sessionId);
+		readyPlayers.remove(sessionId);
 	}
 
-	public int getReadyPlayerSize() {
-		return readyPlayerSet.size();
+	public int getReadyPlayersSize() {
+		return readyPlayers.size();
 	}
 
-	public void setReadyPlayerSet(Set<String> readyPlayerSet) {
-		this.readyPlayerSet = readyPlayerSet;
+	public Set<String> getReadyPlayers() {
+		return readyPlayers;
+	}
+
+	public void setReadyPlayers(Set<String> readyPlayers) {
+		this.readyPlayers = readyPlayers;
 	}
 
 	@Override
 	public String toString() {
-		return "AbstractGame [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayerSet + ", joinCount=" + joinCount + "]";
+		return "AbstractGame [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayers + ", joinCount=" + joinCount + "]";
 	}
 
 }
