@@ -44,36 +44,38 @@ public class PlayerService extends AbstractWebSocketService {
 			abstractGame = gameService.newGame();
 			waitingGameMap.put(abstractGame.getId(), abstractGame);
 		}
-		return addPlayer(sessionId, name, abstractGame);
+		return addPlayer(new Player(name, sessionId), abstractGame);
 	}
 
 	public String addPlayer(String sessionId, String gameId, String name) {
 		logger.info("addPlayer, sessionId: " + sessionId + ", gameId: " + gameId + ", name: " + name);
 		AbstractGame abstractGame = gameRepository.getWaitingGame(gameId);
 		if (abstractGame != null && abstractGame.getJoinCount().incrementAndGet() <= numOfPlayer)
-			return addPlayer(sessionId, name, abstractGame);
+			return addPlayer(new Player(name, sessionId), abstractGame);
 		else
 			sendTo("joined", sessionId, "error", true);
 		return null;
 	}
 
-	String addPlayer(String sessionId, String name, AbstractGame abstractGame) {
-		logger.info("addPlayer, sessionId: " + sessionId + ", game: " + abstractGame + ", name: " + name);
-		if (abstractGame == null)
-			return null;
+	String addPlayer(Player player, AbstractGame abstractGame) {
 		String gameId = null;
 		int i = 0;
-		Player[] players = abstractGame.getPlayers();
+		synchronized (abstractGame) {
+			logger.info("addPlayer, player: " + player + ", game: " + abstractGame);
+			if (abstractGame == null)
+				return null;
+			Player[] players = abstractGame.getPlayers();
 
-		for (; i < players.length; i++) {
-			if (players[i] == null) {
-				players[i] = new Player(name, sessionId);
-				break;
+			for (; i < players.length; i++) {
+				if (players[i] == null) {
+					players[i] = player;
+					break;
+				}
 			}
+			gameId = abstractGame.getId();
+			playerRepository.addPlayer(player.getSessionId(), gameId);
 		}
-		gameId = abstractGame.getId();
-		playerRepository.addPlayer(sessionId, gameId);
-		sendTo("joined", sessionId, new String[] { "error", "game-id", "index" }, new Object[] { false, gameId, i });
+		sendTo("joined", player.getSessionId(), new String[] { "error", "game-id", "index" }, new Object[] { false, gameId, i });
 		return gameId;
 	}
 
@@ -89,26 +91,33 @@ public class PlayerService extends AbstractWebSocketService {
 			abstractGame = gameRepository.getPlayingGame(gameId);
 			isWaiting = false;
 		}
-		playerRepository.removePlayer(sessionId);
-		Player[] players = abstractGame.getPlayers();
-		int i;
-		for (i = 0; i < players.length; i++) {
-			if (players[i] != null && players[i].getSessionId().equals(sessionId)) {
-				players[i] = null;
-				break;
+		removePlayer(sessionId, isWaiting, abstractGame);
+	}
+
+	void removePlayer(String sessionId, Boolean isWaiting, AbstractGame abstractGame) {
+		logger.info("removePlayer, sessionId: " + sessionId + ", isWaiting: " + isWaiting + ", abstractGame: " + abstractGame);
+		Player[] players;
+		String gameId = abstractGame.getId();
+		synchronized (abstractGame) {
+			playerRepository.removePlayer(sessionId);
+			players = abstractGame.getPlayers();
+			int i;
+			for (i = 0; i < players.length; i++) {
+				if (players[i] != null && players[i].getSessionId().equals(sessionId)) {
+					players[i] = null;
+					break;
+				}
+			}
+			abstractGame.removeReadyPlayer(sessionId);
+			if (!isWaiting) {
+				if (abstractGame.getReadyPlayerSize() == 1) {
+					gameService.playerWin(gameId, playerUtils.getLastPlayerIndex(players));
+					return;
+				}
+				gameService.playerLeaved(abstractGame, i);
 			}
 		}
-		if (isWaiting) {
-			if (abstractGame.getReadyCount().get() > abstractGame.getJoinCount().decrementAndGet())
-				abstractGame.getReadyCount().decrementAndGet();
-		} else {
-			if (abstractGame.getReadyCount().decrementAndGet() == 1) {
-				gameService.playerWin(gameId, playerUtils.getLastPlayerIndex(players));
-				return;
-			}
-			gameService.playerLeaved(abstractGame, i);
-		}
-		send("player-list", abstractGame.getId(), "players", players);
+		send("player-list", gameId, "players", players);
 	}
 
 	public void ready(String sessionId, String gameId) {
@@ -117,8 +126,11 @@ public class PlayerService extends AbstractWebSocketService {
 		if (abstractGame == null)
 			return;
 		send("player-list", gameId, "players", abstractGame.getPlayers());
-		if (abstractGame.getReadyCount().incrementAndGet() == numOfPlayer)
-			gameService.start(gameId);
+		synchronized (abstractGame) {
+			abstractGame.addReadyPlayer(sessionId);
+			if (abstractGame.getReadyPlayerSize() == numOfPlayer)
+				gameService.start(gameId);
+		}
 	}
 
 }

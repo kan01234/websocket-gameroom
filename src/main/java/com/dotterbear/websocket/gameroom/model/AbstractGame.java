@@ -1,16 +1,17 @@
 package com.dotterbear.websocket.gameroom.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractGame {
 
 	String id;
 	Player[] players;
-	AtomicInteger readyCount = new AtomicInteger(0);
+	Set<String> readyPlayerSet = new HashSet<String>();
 	AtomicInteger joinCount = new AtomicInteger(0);
-	AtomicInteger turnCount = new AtomicInteger(-1);
-	// TaskQueueRunner taskQueueRunner = new TaskQueueRunner();
+	// AtomicInteger turnCount = new AtomicInteger(-1);
 
 	public String getId() {
 		return id;
@@ -28,21 +29,14 @@ public abstract class AbstractGame {
 		this.players = players;
 	}
 
-	public AtomicInteger getTurnCount() {
-		return turnCount;
-	}
+	// public AtomicInteger getTurnCount() {
+	// return turnCount;
+	// }
+	//
+	// public void setTurnCount(AtomicInteger turnCount) {
+	// this.turnCount = turnCount;
+	// }
 
-	public void setTurnCount(AtomicInteger turnCount) {
-		this.turnCount = turnCount;
-	}
-
-	public AtomicInteger getReadyCount() {
-		return readyCount;
-	}
-
-	public void setReadyCount(AtomicInteger readyCount) {
-		this.readyCount = readyCount;
-	}
 
 	public AtomicInteger getJoinCount() {
 		return joinCount;
@@ -52,25 +46,33 @@ public abstract class AbstractGame {
 		this.joinCount = joinCount;
 	}
 
-	// public TaskQueueRunner getTaskQueueRunner() {
-	// return taskQueueRunner;
-	// }
-	//
-	// public void setTaskQueueRunner(TaskQueueRunner taskQueueRunner) {
-	// this.taskQueueRunner = taskQueueRunner;
-	// }
-	//
-	// public void addTask(Runnable runnable) {
-	// taskQueueRunner.add(runnable);
+	// public int getCurrentPlayerIndex() {
+	// return turnCount.get() % players.length;
 	// }
 
-	public int getCurrentPlayerIndex() {
-		return turnCount.get() % players.length;
+	public Set<String> getReadyPlayerSet() {
+		return readyPlayerSet;
+	}
+
+	public void addReadyPlayer(String sessionId) {
+		readyPlayerSet.add(sessionId);
+	}
+
+	public void removeReadyPlayer(String sessionId) {
+		readyPlayerSet.remove(sessionId);
+	}
+
+	public int getReadyPlayerSize() {
+		return readyPlayerSet.size();
+	}
+
+	public void setReadyPlayerSet(Set<String> readyPlayerSet) {
+		this.readyPlayerSet = readyPlayerSet;
 	}
 
 	@Override
 	public String toString() {
-		return "Game [id=" + id + ", players=" + Arrays.toString(players) + ", readyCount=" + readyCount + ", joinCount=" + joinCount + ", turnCount=" + turnCount + "]";
+		return "AbstractGame [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayerSet + ", joinCount=" + joinCount + "]";
 	}
 
 }
