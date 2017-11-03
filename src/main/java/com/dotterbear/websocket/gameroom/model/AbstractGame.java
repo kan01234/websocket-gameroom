@@ -8,10 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class AbstractGame {
 
 	String id;
-	Player[] players;
+	protected Player[] players;
 	Set<String> readyPlayerSet = new HashSet<String>();
 	AtomicInteger joinCount = new AtomicInteger(0);
-	// AtomicInteger turnCount = new AtomicInteger(-1);
 
 	public String getId() {
 		return id;
@@ -29,15 +28,6 @@ public abstract class AbstractGame {
 		this.players = players;
 	}
 
-	// public AtomicInteger getTurnCount() {
-	// return turnCount;
-	// }
-	//
-	// public void setTurnCount(AtomicInteger turnCount) {
-	// this.turnCount = turnCount;
-	// }
-
-
 	public AtomicInteger getJoinCount() {
 		return joinCount;
 	}
@@ -45,10 +35,6 @@ public abstract class AbstractGame {
 	public void setJoinCount(AtomicInteger joinCount) {
 		this.joinCount = joinCount;
 	}
-
-	// public int getCurrentPlayerIndex() {
-	// return turnCount.get() % players.length;
-	// }
 
 	public Set<String> getReadyPlayerSet() {
 		return readyPlayerSet;

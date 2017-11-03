@@ -1,6 +1,6 @@
 # cd ..
 
-ver=1.2-rc;
+ver=1.3-m;
 base=$(pwd);
 mvn clean package
 rm -rf ${base}/../aeroplanes-chess/repo/com/dotterbear/websocket-gameroom/
