@@ -11,14 +11,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class AbstractWebSocketService {
 
-	Logger logger = LoggerFactory.getLogger(AbstractWebSocketService.class);
+	private Logger logger = LoggerFactory.getLogger(AbstractWebSocketService.class);
 
 	// TODO the value maybe a array?
 	@Value(value = "${websocket.destination.prefix.broker}")
-	String brokerDestinationPrefix;
+	private String brokerDestinationPrefix;
 
 	@Autowired
-	SimpMessagingTemplate simpMessagingTemplate;
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	/**
 	 * send message to path /${applicationDestationPrefix}/${gameId}/${path}, used
@@ -129,7 +129,7 @@ public class AbstractWebSocketService {
 		sendTo(path, sessionId, new String[] { key }, new Object[] { value });
 	}
 
-	void send(String path, String[] keys, Object[] values) {
+	private void send(String path, String[] keys, Object[] values) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (int i = 0; i < keys.length; i++) {
 			map.put(keys[i], values[i]);

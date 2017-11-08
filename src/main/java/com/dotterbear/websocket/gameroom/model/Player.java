@@ -2,8 +2,8 @@ package com.dotterbear.websocket.gameroom.model;
 
 public class Player {
 
-	String name;
-	String sessionId;
+	private String name;
+	private String sessionId;
 
 	public Player() {
 	}

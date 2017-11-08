@@ -14,9 +14,9 @@ import com.dotterbear.websocket.gameroom.service.PlayerService;
 public class PlayerWebSocketController {
 
 	@Autowired
-	PlayerService playerService;
+	private PlayerService playerService;
 
-	Logger logger = LoggerFactory.getLogger(PlayerWebSocketController.class);
+	private Logger logger = LoggerFactory.getLogger(PlayerWebSocketController.class);
 
 	@MessageMapping("/join/{gameId}/{name}")
 	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) {

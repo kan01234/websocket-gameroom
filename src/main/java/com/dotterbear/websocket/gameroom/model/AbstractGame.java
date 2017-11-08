@@ -7,10 +7,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractGame {
 
-	String id;
+	private String id;
 	protected Player[] players;
-	Set<String> readyPlayers = new HashSet<String>();
-	AtomicInteger joinCount = new AtomicInteger(0);
+	private Set<String> readyPlayers = new HashSet<String>();
+	private AtomicInteger joinCount = new AtomicInteger(0);
 
 	public String getId() {
 		return id;

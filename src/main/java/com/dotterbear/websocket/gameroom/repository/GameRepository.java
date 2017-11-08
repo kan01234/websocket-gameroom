@@ -17,17 +17,17 @@ public class GameRepository<T extends AbstractGame> {
 	 */
 	// TODO move to redis ?
 	@Autowired
-	Map<String, T> waitingGameMap;
+	private Map<String, T> waitingGameMap;
 
 	/**
 	 * map to store playing games
 	 */
 	// TODO move to redis ?
 	@Autowired
-	Map<String, T> playingGameMap;
+	private Map<String, T> playingGameMap;
 
 	@Autowired
-	PlayerRepository playerRepository;
+	private PlayerRepository playerRepository;
 
 	/**
 	 * get the playing game by gameId

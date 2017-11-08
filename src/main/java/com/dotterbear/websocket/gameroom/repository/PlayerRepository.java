@@ -11,7 +11,7 @@ public class PlayerRepository {
 
 	// TODO move to redis ?
 	@Autowired
-	Map<String, String> playerGameMap;
+	private Map<String, String> playerGameMap;
 
 	public Map<String, String> getPlayerGameMap() {
 		return playerGameMap;

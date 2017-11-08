@@ -6,7 +6,7 @@
 
 	<artifactId>websocket-gameroom</artifactId>
 
-	<version>1.3-m</version>
+	<version>1.3-m2</version>
 
 	<properties>
 		<java.version>1.8</java.version>
