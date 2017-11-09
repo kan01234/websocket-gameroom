@@ -14,17 +14,17 @@ public class GameRoomConfig {
 
 	@Bean(name = "playerGameMap")
 	public Map<String, String> getPlayerGameMap() {
-		return new ConcurrentHashMap<String, String>();
+		return new ConcurrentHashMap<>();
 	}
 
 	@Bean(name = "playingGameMap")
 	public Map<String, AbstractGame> getPlayingGameMap() {
-		return new ConcurrentHashMap<String, AbstractGame>();
+		return new ConcurrentHashMap<>();
 	}
 
 	@Bean(name = "waitingGameMap")
 	public Map<String, AbstractGame> getWaitingGameMap() {
-		return new ConcurrentHashMap<String, AbstractGame>();
+		return new ConcurrentHashMap<>();
 	}
 
 	@Bean

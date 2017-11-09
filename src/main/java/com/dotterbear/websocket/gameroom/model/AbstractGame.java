@@ -9,7 +9,7 @@ public abstract class AbstractGame {
 
 	private String id;
 	protected Player[] players;
-	private Set<String> readyPlayers = new HashSet<String>();
+	private Set<String> readyPlayers = new HashSet<>();
 	private AtomicInteger joinCount = new AtomicInteger(0);
 
 	public String getId() {

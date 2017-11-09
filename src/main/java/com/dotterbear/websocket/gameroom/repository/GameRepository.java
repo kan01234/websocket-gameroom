@@ -1,6 +1,7 @@
 package com.dotterbear.websocket.gameroom.repository;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.dotterbear.websocket.gameroom.model.AbstractGame;
+import com.dotterbear.websocket.gameroom.model.Player;
 
 @Repository
 public class GameRepository<T extends AbstractGame> {
@@ -80,7 +82,7 @@ public class GameRepository<T extends AbstractGame> {
 	public T removePlayingGame(String gameId) {
 		T t = playingGameMap.remove(gameId);
 		if (t != null)
-			playerRepository.removePlayer(Stream.of(t.getPlayers()).filter(p -> p != null).map(p -> p.getSessionId()).collect(Collectors.toList()));
+			playerRepository.removePlayer(Stream.of(t.getPlayers()).filter(Objects::nonNull).map(Player::getSessionId).collect(Collectors.toList()));
 		return t;
 	}
 

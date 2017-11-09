@@ -130,11 +130,11 @@ public class AbstractWebSocketService {
 	}
 
 	private void send(String path, String[] keys, Object[] values) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		for (int i = 0; i < keys.length; i++) {
 			map.put(keys[i], values[i]);
 		}
-		logger.info("send to path: " + path + ", data: " + map);
+		logger.info("send to path: ", path, ", data: ", map);
 		simpMessagingTemplate.convertAndSend(brokerDestinationPrefix + "/" + path, map);
 	}
 
